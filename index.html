@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tareas</title>
+</head>
+<body>
+
+    <header>
+        <h1>Tareas</h1>
+        <input class="new-todo" placeholder="Escribe aqui tu tarea" autofocus>
+    </header>
+
+
+<main>
+    <input id="toggle-all" class="toggle-all" type="checkbox">
+    <label for="toggle-all">Marcar como completado</label>
+    <ul class="todo-list">
+
+    </ul>
+</main>
+
+<footer>
+    <span class="todo-count"><strong>0</strong> pendiente(s) </span>
+    <ul class="filters">
+        <li>
+            <a class="selected filtro" href="#/">To do</a>
+        </li>
+        <li>
+            <a class="filtro" href="#/active">Pendientes</a>
+        </li>
+        <li>
+            <a class="filtro" href="#/completed">Completadas</a>
+        </li>
+    </ul>
+    <!-- ocultar si no quedan completados-->
+    <button class="clear-completed">Borrar completados</button>
+</footer>
+<script src="./app.js"></script>
+</body>
+</html>
