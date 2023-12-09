@@ -39,5 +39,62 @@ input.addEventListener('keyup', (event) => {
     }
 });
 
+todolistHTML.addEventListener('click', (event) => {
+   const nombreElemento = event.target.localName;
+   const todoElemento = event.target.parentElement.parentElement;
+   const todoID = parseInt(todoElemento.getAttribute('data-id'));
+//MIRAR DATA-ID
+   if (nombreElemento.includes('input')){
+       todoList = todoList.map(todo => {
+           if (todo.id === todoID){
+               todo.completado = !todo.completado;
+           }
+           return todo;
+       });
+       todoElemento.classList.toggle('completed');
+   } else if (nombreElemento.includes('button')){
+       //EXPLICAR
+       todoList = todoList.filter(todo => todo.id !== todoID);
+       todolistHTML.removeChild(todoElemento);
+   }
+});
 
+btnBorrar.addEventListener('click', () => {
+    todoList = todoList.filter(todo => !todo.completado);
 
+    for (let i = todolistHTML.children.length - 1; i >= 0; i--) {
+        const elemento = todolistHTML.children[i];
+
+        if (elemento.classList.contains('completed')){
+            todolistHTML.removeChild(elemento);
+        }
+    }
+});
+
+ulFiltros.addEventListener('click', (event) => {
+    const filtro = event.target.text;
+
+    if (!filtro){return;}
+
+    anchorFiltros.forEach(element => element.classList.remove('selected'));
+    event.target.classList.add('selected');
+
+    for (const elemento of todolistHTML.children){
+        elemento.classList.remove('hidden');
+        const completado = elemento.classList.contains('completed');
+
+        //si no lo encuentra, se muestran tareas
+        switch (filtro) {
+            case 'Pendientes' :
+                if (completado) {
+                    elemento.classList.add('hidden');
+                }
+                break;
+            case 'Completados' :
+                if (!completado) {
+                    elemento.classList.add('hidden');
+                }
+                break;
+        }
+    }
+});
