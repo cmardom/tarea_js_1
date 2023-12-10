@@ -6,38 +6,50 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tareas</title>
+    <style>
+        body{
+            font-family: Arial;
+        }
+        .hidden{
+            display: none;
+        }
+        #todo-list{
+            list-style: none;
+            padding: 0;
+        }
+
+        #todo-list > li > input[type=checkbox]:checked + label{
+            text-decoration: line-through;
+        }
+    </style>
 </head>
 <body>
 
     <header>
         <h1>Tareas</h1>
-        <input class="new-todo" placeholder="Escribe aqui tu tarea" autofocus>
+        <form id="mainForm">
+            <label>
+                <input type="text" class="todo-input" placeholder="Escribe aqui tu tarea" autofocus>
+            </label>
+            <button>A&ntilde;adir</button>
+        </form>
     </header>
 
 
 <main>
-    <input id="toggle-all" class="toggle-all" type="checkbox">
-    <label for="toggle-all">Marcar como completado</label>
-    <ul class="todo-list">
 
-    </ul>
+    <ul id="todo-list"></ul>
+
+    <li id="list-item-template" class="hidden">
+        <input type="checkbox">
+        <label></label>
+        <button>Borrar</button>
+    </li>
 </main>
 
 <footer>
-    <span class="todo-count"><strong>0</strong> pendiente(s) </span>
-    <ul class="filters">
-        <li>
-            <a class="selected filtro" href="#/">To do</a>
-        </li>
-        <li>
-            <a class="filtro" href="#/active">Pendientes</a>
-        </li>
-        <li>
-            <a class="filtro" href="#/completed">Completadas</a>
-        </li>
-    </ul>
+    <span id="todo-count-pending"><strong>0</strong> pendiente(s) </span>
     <!-- ocultar si no quedan completados-->
-    <button class="clear-completed">Borrar completados</button>
 </footer>
 <script src="./app.js"></script>
 </body>

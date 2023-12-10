@@ -1,100 +1,74 @@
-const todolistHTML = document.querySelector('.todo-list');
-const input = document.querySelector('.new-todo');
-const btnBorrar = document.querySelector('.clear-completed');
-const ulFiltros = document.querySelector('.filters');
-const anchorFiltros = document.querySelectorAll('.filtro');
+const todoListHTML = document.querySelector('#todo-list');
+const template = document.querySelector("#list-item-template");
+const pendientes = document.querySelector("#todo-count-pending");
+
 
 let todoList = [];
-function crearTodoHTML (estadoCompletado, textoTarea){
-    const htmlTodo = `<li class="${estadoCompletado ? 'completed' : ''}">
-                                <div class="view">
-                                    <input class="toggle" type="checkbox" ${estadoCompletado ? 'checked' : ''}>
-                                    <label>${textoTarea}</label>
-                                    <button class="destroy"></button>
-                                </div>
-                                <input class="edit" value="Create TODOMVC Template">
-                                </li>`;
-    const div = document.createElement('div');
-    div.innerHTML = htmlTodo;
-    todolistHTML.append(div.firstElementChild);
-
-    return div.firstElementChild;
+const todoFromLocalStorage = localStorage.getItem("todo");
+if(todoFromLocalStorage){
+    todoList = JSON.parse(todoFromLocalStorage);
 }
 
+renderTodoList();
+countPending();
 
+const mainForm = document.querySelector('#mainForm');
 
-input.addEventListener('keyup', (event) => {
-    //13 == enter
-    if (event.keyCode === 13 && input.value.length > 0){
-        const textoTarea = input.value;
-        const nuevoTodo = {
-            id: Date.now(),
-            texto: textoTarea,
-            completado: false
-        };
+mainForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const todoInput = e.target.querySelector('.todo-input');
+    todoList.push(todoInput.value);
+    localStorage.setItem("todo", JSON.stringify(todoList));
+    todoInput.value = '';
 
-        todoList.push(nuevoTodo);
-        crearTodoHTML(nuevoTodo.completado, nuevoTodo.texto);
-        input.value = '';
+    renderTodoList();
+});
+
+function renderTodoList(){
+    while(todoListHTML.firstElementChild){
+        todoListHTML.replaceChildren()
     }
-});
 
-todolistHTML.addEventListener('click', (event) => {
-   const nombreElemento = event.target.localName;
-   const todoElemento = event.target.parentElement.parentElement;
-   const todoID = parseInt(todoElemento.getAttribute('data-id'));
-//MIRAR DATA-ID
-   if (nombreElemento.includes('input')){
-       todoList = todoList.map(todo => {
-           if (todo.id === todoID){
-               todo.completado = !todo.completado;
-           }
-           return todo;
-       });
-       todoElemento.classList.toggle('completed');
-   } else if (nombreElemento.includes('button')){
-       //EXPLICAR
-       todoList = todoList.filter(todo => todo.id !== todoID);
-       todolistHTML.removeChild(todoElemento);
-   }
-});
+    for(const index in todoList){
+        const todoId = "todo-" + index;
 
-btnBorrar.addEventListener('click', () => {
-    todoList = todoList.filter(todo => !todo.completado);
+        const clone = template.cloneNode(true);
+        clone.classList.remove("hidden");
 
-    for (let i = todolistHTML.children.length - 1; i >= 0; i--) {
-        const elemento = todolistHTML.children[i];
+        const label = clone.querySelector("label");
+        label.textContent = todoList[index];
+        label.setAttribute("for", todoId);
 
-        if (elemento.classList.contains('completed')){
-            todolistHTML.removeChild(elemento);
-        }
+        clone.querySelector('button').addEventListener("click", borrarHandler);
+
+        const checkbox = clone.querySelector('input[type=checkbox]');
+        checkbox.setAttribute("id", todoId);
+        checkbox.addEventListener("change", estadoHandler);
+
+        todoListHTML.append(clone);
     }
-});
+}
 
-ulFiltros.addEventListener('click', (event) => {
-    const filtro = event.target.text;
+function estadoHandler(e){
+    countPending();
+}
 
-    if (!filtro){return;}
+function countPending(){
+    const pending = todoListHTML.querySelectorAll('input[type=checkbox]:not(:checked)').length;
+    pendientes.querySelector('strong').textContent = pending;
+}
 
-    anchorFiltros.forEach(element => element.classList.remove('selected'));
-    event.target.classList.add('selected');
+function borrarHandler(e) {
+    const todoItemToRemove = e.target.parentElement;
+    const index = Array.from(todoListHTML.children).indexOf(todoItemToRemove);
 
-    for (const elemento of todolistHTML.children){
-        elemento.classList.remove('hidden');
-        const completado = elemento.classList.contains('completed');
+    todoList.splice(index, 1);
 
-        //si no lo encuentra, se muestran tareas
-        switch (filtro) {
-            case 'Pendientes' :
-                if (completado) {
-                    elemento.classList.add('hidden');
-                }
-                break;
-            case 'Completados' :
-                if (!completado) {
-                    elemento.classList.add('hidden');
-                }
-                break;
-        }
-    }
-});
+    console.log(todoList);
+    renderTodoList();
+}
+
+function borrarCompletados(e){
+
+    console.log()
+}
